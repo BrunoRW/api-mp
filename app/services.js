@@ -18,6 +18,8 @@ const generatePayment = async (req, res) => {
     let sandbox = req.body.sandbox;
     let webhook_client = req.body.webhook;
 
+    console.log(req.body)
+
     let code = v4();
 
     if(!token){
