@@ -128,6 +128,8 @@ const checkPaymentStatusWEB = async (req, res) => {
             return e.code === code;
         })
 
+        console.log(data[0]);
+
         fetch(data[0].webhook, {
             method: "POST",
             headers: {
