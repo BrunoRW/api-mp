@@ -128,7 +128,9 @@ const checkPaymentStatusWEB = async (req, res) => {
             return e.code === code;
         })
 
-        console.log(data[0]);
+        console.log(data);
+
+        console.log(array_data);
 
         fetch(data[0].webhook, {
             method: "POST",
