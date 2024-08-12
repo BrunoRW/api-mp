@@ -139,7 +139,8 @@ const checkPaymentStatusWEB = async (req, res) => {
             },
             body: JSON.stringify({
                 code: code,
-                status: status
+                status: status,
+                pay_id: pay_id
             })
         })
     })
