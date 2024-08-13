@@ -84,7 +84,7 @@ const generatePayment = async (req, res) => {
             link = data.sandbox_init_point;
         } 
 
-        res.json({status: "success", payment_link: link, order_id: transactionId});
+        res.json({status: "success", payment_link: link, order_id: code});
 
         // insert data to process line {id, webhook}
         push_line(webhook_client, code)
