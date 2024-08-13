@@ -108,6 +108,10 @@ const checkPaymentStatusWEB = async (req, res) => {
         return e.collector == collector;
     })
 
+    console.log('============= DATA =================');
+    console.log(array_data, collector);
+    console.log('====================================');
+
     let token = data[0].token;
 
     const url = `https://api.mercadopago.com/v1/payments/${pay_id}`;
