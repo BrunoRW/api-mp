@@ -5,6 +5,7 @@ const routes = Router();
 
 // GET 
 routes.get('/', (req, res) => {
+    console.log("ping");   
     res.json({ text: "inded" });
 });
 
@@ -13,10 +14,6 @@ routes.post('/v1/payment_link', generatePayment);
 routes.post('/v1/webhook', checkPaymentStatusWEB);
 
 routes.post('/v1/check', checkPayment);
-
-routes.get('/', (req, res) => {
-    console.log("ping");    
-});
 
 
 routes.post("/recive", (req, res) =>{
