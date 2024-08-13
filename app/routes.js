@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import {generatePayment, checkPaymentStatusWEB} from './services.js';
+import {generatePayment, checkPaymentStatusWEB, checkPayment} from './services.js';
 
 const routes = Router();
 
@@ -11,6 +11,13 @@ routes.get('/', (req, res) => {
 routes.post('/v1/payment_link', generatePayment);
 
 routes.post('/v1/webhook', checkPaymentStatusWEB);
+
+routes.post('/v1/check', checkPayment);
+
+routes.get('/', (req, res) => {
+    console.log("ping");    
+});
+
 
 routes.post("/recive", (req, res) =>{
     console.log('\n\n====================================');

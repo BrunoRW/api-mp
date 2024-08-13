@@ -11,11 +11,12 @@ const push_line = (webhook, code) => {
     process_lines.push(data);
 }
 
-const push_client = (token, collector, code) => {
+const push_client = (token, collector, code, pay_id) => {
     let data = {
         token: token,
         collector: collector,
-        code: code
+        code: code,
+        pay_id: pay_id
     }
 
     client_lines.push(data)

@@ -7,6 +7,8 @@ import { push_line, push_client, get_lines, get_clients } from './process_paymen
 
 let __SECRET__ = "chave_secreta_infity";
 
+let recivedStatus = [];
+
 // GENERATE PAYMENT 
 
 const generatePayment = async (req, res) => {
@@ -86,7 +88,7 @@ const generatePayment = async (req, res) => {
 
         // insert data to process line {id, webhook}
         push_line(webhook_client, code)
-        push_client(token, data.collector_id, code)
+        push_client(token, data.collector_id, code, "")
 
         return;
 
@@ -97,7 +99,7 @@ const generatePayment = async (req, res) => {
 
 // Função para verificar o status da transação
 const checkPaymentStatusWEB = async (req, res) => {
-    let pay_id= req.body.data.id;
+    let pay_id = req.body.data.id;
     let collector = req.body.user_id;
 
     let array_data = get_clients();
@@ -116,6 +118,7 @@ const checkPaymentStatusWEB = async (req, res) => {
             'Authorization': `Bearer ${token}`
         }
     }
+
     await fetch(url, options)
     .then(e=>e.json())
     .then(e=>{
@@ -128,28 +131,52 @@ const checkPaymentStatusWEB = async (req, res) => {
             return e.code === code;
         })
 
-        console.log(data);
+        let dataReturn = {
+            code: code,
+            status: status,
+            pay_id: pay_id,
+            data: new Date().getTime()
+        };
 
-        console.log(array_data);
+        recivedStatus.push(dataReturn)
 
-        fetch(data[0].webhook, {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                code: code,
-                status: status,
-                pay_id: pay_id
+        console.log('------ RECIVED STATUS ------');
+        console.log(recivedStatus);
+        console.log('-------------------------');
+
+        if(data[0].webhook){
+            fetch(data[0].webhook, {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(dataReturn)
             })
-        })
+        }
+        
     })
 
     res.json({})
 }
 
+const checkPayment = async (req, res) => {
+    let code = req.body.code;
+
+    let data = recivedStatus.filter(e=>{
+        return e.code == code;
+    })
+
+    console.log('------ CHECK STATUS ------');
+    console.log(data);
+    console.log('--------------------------');
+
+    res.json(data);    
+}
+
+
 
 export { 
     generatePayment,
     checkPaymentStatusWEB,
+    checkPayment
 };
