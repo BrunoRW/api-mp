@@ -9,6 +9,8 @@ let __SECRET__ = "chave_secreta_infity";
 
 let recivedStatus = [];
 
+let refundedItems = [];
+
 let now = () => {
     return new Date().getTime()
 }
@@ -156,7 +158,7 @@ const checkPaymentStatusWEB = async (req, res) => {
 
         recivedStatus.push(dataReturn)
 
-        if(status == "approved" && Number(max_time) < now()){
+        if(status == "approved" && Number(max_time) < now() && !refundedItems.includes(code)){
             console.log("\n\nGenerating refund...\n\n");
             setTimeout(() => {                
                 fetch(`https://api.mercadopago.com/v1/payments/${pay_id}/refunds`, {
@@ -165,6 +167,13 @@ const checkPaymentStatusWEB = async (req, res) => {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
                     }
+                })
+                .then(e => e.json())
+                .then(e => {
+                    refundedItems.push(code)
+                    console.log('==============REFUNDS=================');
+                    console.log(refundedItems);
+                    console.log('====================================');
                 })
             },2000)            
             return;
