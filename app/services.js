@@ -82,7 +82,7 @@ const generatePayment = async (req, res) => {
                 ],
                 metadata: {
                     code: code,
-                    max_time: Number(max_time) + now()
+                    max_time: (Number(max_time) * 1000) + now()
                 }
             }
         });
