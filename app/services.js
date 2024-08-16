@@ -9,8 +9,6 @@ let __SECRET__ = "chave_secreta_infity";
 
 let recivedStatus = [];
 
-let maxTimePay = 10 * 1000;
-
 let now = () => {
     return new Date().getTime()
 }
@@ -25,10 +23,16 @@ const generatePayment = async (req, res) => {
     let unit_price = req.body.unit_price;
     let sandbox = req.body.sandbox;
     let webhook_client = req.body.webhook;
+    let max_time = req.body.max_time;
 
     console.log(req.body)
 
     let code = v4();
+
+    if(!max_time){
+        res.json({status: "error", reason: "max_time is necessary, ex: 60 (60 seconds)"});
+        return;
+    }
 
     if(!token){
         res.json({status: "error", reason: "token is necessary"});
@@ -78,7 +82,7 @@ const generatePayment = async (req, res) => {
                 ],
                 metadata: {
                     code: code,
-                    time: now()
+                    max_time: Number(max_time) + now()
                 }
             }
         });
@@ -135,7 +139,7 @@ const checkPaymentStatusWEB = async (req, res) => {
     .then(e=>{
         let status = e.status;
         let code = e.metadata.code;
-        let timeGenerate = e.metadata.time;
+        let max_time = e.metadata.max_time;
 
         let array_data = get_lines();
 
@@ -152,14 +156,17 @@ const checkPaymentStatusWEB = async (req, res) => {
 
         recivedStatus.push(dataReturn)
 
-        if(status == "approved" && Number(timeGenerate) + maxTimePay < now()){
-            fetch(`https://api.mercadopago.com/v1/payments/${pay_id}/refunds`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                }
-            })
+        if(status == "approved" && Number(max_time) < now()){
+            console.log("\n\nGenerating refund...\n\n");
+            setTimeout(() => {                
+                fetch(`https://api.mercadopago.com/v1/payments/${pay_id}/refunds`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                })
+            },2000)            
             return;
         }
 
