@@ -152,7 +152,7 @@ const checkPaymentStatusWEB = async (req, res) => {
 
         recivedStatus.push(dataReturn)
 
-        if(status == "approved" && timeGenerate + maxTimePay < time()){
+        if(status == "approved" && Number(timeGenerate) + maxTimePay < now()){
             fetch(`https://api.mercadopago.com/v1/payments/${pay_id}/refunds`, {
                 method: 'POST',
                 headers: {
