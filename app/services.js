@@ -89,7 +89,6 @@ const generatePayment = async (req, res) => {
             }
         });
 
-        const transactionId = data.id; // Salvar o ID da transação
         
         let link = data.init_point;
 
@@ -125,7 +124,12 @@ const checkPaymentStatusWEB = async (req, res) => {
     console.log(array_data, collector);
     console.log('====================================');
 
-    let token = data[0].token;
+    let token = data[0]?.token;
+
+    if(!token){
+        console.log("Falha ao pegar token, retornando.");        
+        return;
+    }
 
     const url = `https://api.mercadopago.com/v1/payments/${pay_id}`;
     const options = {
