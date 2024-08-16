@@ -176,7 +176,7 @@ const checkPaymentStatusWEB = async (req, res) => {
                     console.log(refundedItems);
                     console.log('====================================');
                 })
-            },2000)            
+            },10000)            
             return;
         }
 
