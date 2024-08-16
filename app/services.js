@@ -168,7 +168,7 @@ const checkPaymentStatusWEB = async (req, res) => {
                 fetch(`https://api.mercadopago.com/v1/payments/${pay_id}/refunds`, {
                     method: 'POST',
                     headers: {
-                        'X-Idempotency-Key': 'not_null',
+                        'X-Idempotency-Key': `${code}`,
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
                     }
