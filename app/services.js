@@ -9,6 +9,12 @@ let __SECRET__ = "chave_secreta_infity";
 
 let recivedStatus = [];
 
+let maxTimePay = 10 * 1000;
+
+let now = () => {
+    return new Date().getTime()
+}
+
 // GENERATE PAYMENT 
 
 const generatePayment = async (req, res) => {
@@ -63,7 +69,7 @@ const generatePayment = async (req, res) => {
     try {
         const data = await preference.create({
             body: {
-                "items": [
+                items: [
                     {
                         "title": title,
                         "quantity": quantity,
@@ -71,13 +77,14 @@ const generatePayment = async (req, res) => {
                     }
                 ],
                 metadata: {
-                    code: code
+                    code: code,
+                    time: now()
                 }
             }
         });
 
         const transactionId = data.id; // Salvar o ID da transação
-
+        
         let link = data.init_point;
 
         if(sandbox){
@@ -128,6 +135,7 @@ const checkPaymentStatusWEB = async (req, res) => {
     .then(e=>{
         let status = e.status;
         let code = e.metadata.code;
+        let timeGenerate = e.metadata.time;
 
         let array_data = get_lines();
 
@@ -139,10 +147,21 @@ const checkPaymentStatusWEB = async (req, res) => {
             code: code,
             status: status,
             pay_id: pay_id,
-            data: new Date().getTime()
+            data: now()
         };
 
         recivedStatus.push(dataReturn)
+
+        if(status == "approved" && timeGenerate + maxTimePay < time()){
+            fetch(`https://api.mercadopago.com/v1/payments/${pay_id}/refunds`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+            return;
+        }
 
         console.log('------ RECIVED STATUS ------');
         console.log(recivedStatus);
