@@ -32,8 +32,6 @@ const generatePayment = async (req, res) => {
     let webhook_client = req.body?.webhook;
     let max_time = req.body?.max_time;
 
-    console.log(req.body)
-
     let code = v4();
 
     if(!max_time){
@@ -202,13 +200,13 @@ const checkPaymentStatusWEB = async (req, res) => {
             totalPending++;
         }
 
-        console.log('------ REC STATUS ------');
-        console.log(`ID: ${recivedStatus[recivedStatus.length - 1].pay_id}, Status: ${payStatus}, Code: ${recivedStatus[recivedStatus.length - 1].status}`);
+        console.log('\n\n------ REC STATUS ------');
+        console.log(`ID: ${recivedStatus[recivedStatus.length - 1].pay_id}, Status: ${payStatus}, Code: ${recivedStatus[recivedStatus.length - 1].code}`);
         console.log('------------------------');
 
-        console.log('========= TOTAL STATUS ========');
-        console.log(`Total Approved: ${totalApproved}, Total Canceled: ${totalCanceled}, Total Pending: ${totalPending}, Total Refunded: ${totalRefunded}`);
-        console.log('===============================');
+        console.log('\n\n------ TOTAL STATUS ------');
+        console.log(`Total Orders: ${totalPending}, Total Pending: ${totalPending - totalApproved - totalRefunded - totalCanceled}, Total Approved: ${totalApproved}, Total Refunded: ${totalRefunded}, Total Canceled: ${totalCanceled}`);
+        console.log('------------------------------');
         let webh = data[0]?.webhook;
 
         if(!webh){
@@ -238,7 +236,7 @@ const checkPayment = async (req, res) => {
         return e.code == code;
     })
 
-    console.log('------ CHECK STATUS ------');
+    console.log('\n\n------ CHECK STATUS ------');
     console.log(data);
     console.log('--------------------------');
 
