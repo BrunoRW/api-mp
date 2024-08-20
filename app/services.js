@@ -183,8 +183,8 @@ const checkPaymentStatusWEB = async (req, res) => {
             return;
         }
 
-        let payData = recivedStatus[recivedStatus.length];
-        let payStatus = payData.status;
+        // let payData = recivedStatus[recivedStatus.length];
+        let payStatus = false;
 
         if(payStatus == "approved"){
             totalApproved++;
@@ -203,7 +203,8 @@ const checkPaymentStatusWEB = async (req, res) => {
         }
 
         console.log('------ REC STATUS ------');
-        console.log(`ID: ${recivedStatus[recivedStatus.length].pay_id}, Status: ${payStatus}, Code: ${recivedStatus[recivedStatus.length].status}`);
+        // console.log(`ID: ${recivedStatus[recivedStatus.length].pay_id}, Status: ${payStatus}, Code: ${recivedStatus[recivedStatus.length].status}`);
+        console.log(recivedStatus);
         console.log('------------------------');
 
         console.log('========= TOTAL STATUS ========');
