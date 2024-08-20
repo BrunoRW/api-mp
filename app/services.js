@@ -11,6 +11,11 @@ let recivedStatus = [];
 
 let refundedItems = [];
 
+let totalApproved = 0;
+let totalPending = 0;
+let totalCanceled = 0;
+let totalRefunded = 0;
+
 let now = () => {
     return new Date().getTime()
 }
@@ -18,14 +23,14 @@ let now = () => {
 // GENERATE PAYMENT 
 
 const generatePayment = async (req, res) => {
-    let secret = req.body.secret;
-    let token = req.body.token;
-    let title = req.body.title;
-    let quantity = req.body.quantity;
-    let unit_price = req.body.unit_price;
-    let sandbox = req.body.sandbox;
-    let webhook_client = req.body.webhook;
-    let max_time = req.body.max_time;
+    let secret = req.body?.secret;
+    let token = req.body?.token;
+    let title = req.body?.title;
+    let quantity = req.body?.quantity;
+    let unit_price = req.body?.unit_price;
+    let sandbox = req.body?.sandbox;
+    let webhook_client = req.body?.webhook;
+    let max_time = req.body?.max_time;
 
     console.log(req.body)
 
@@ -120,10 +125,6 @@ const checkPaymentStatusWEB = async (req, res) => {
         return e.collector == collector;
     })
 
-    console.log('============= DATA =================');
-    console.log(array_data, collector);
-    console.log('====================================');
-
     let token = data[0]?.token;
 
     if(!token){
@@ -176,17 +177,38 @@ const checkPaymentStatusWEB = async (req, res) => {
                 .then(e => e.json())
                 .then(e => {
                     refundedItems.push(code)
-                    console.log('==============REFUNDS=================');
-                    console.log(refundedItems);
-                    console.log('====================================');
+                    console.log("--- Item refunded ---")
                 })
             },45000)            
             return;
         }
 
-        console.log('------ RECIVED STATUS ------');
-        console.log(recivedStatus);
-        console.log('-------------------------');
+        let payData = recivedStatus[recivedStatus.length];
+        let payStatus = payData.status;
+
+        if(payStatus == "approved"){
+            totalApproved++;
+        }
+
+        if(payStatus == "canceled"){
+            totalCanceled++;
+        }
+
+        if(payStatus == "refunded"){
+            totalRefunded++;
+        }
+
+        if(payStatus == "pending"){
+            totalPending++;
+        }
+
+        console.log('------ REC STATUS ------');
+        console.log(`ID: ${recivedStatus[recivedStatus.length].pay_id}, Status: ${payStatus}, Code: ${recivedStatus[recivedStatus.length].status}`);
+        console.log('------------------------');
+
+        console.log('========= TOTAL STATUS ========');
+        console.log(`Total Approved: ${totalApproved}, Total Canceled: ${totalCanceled}, Total Pending: ${totalPending}, Total Refunded: ${totalRefunded}`);
+        console.log('===============================');
         let webh = data[0]?.webhook;
 
         if(!webh){
@@ -222,8 +244,6 @@ const checkPayment = async (req, res) => {
 
     res.json(data);    
 }
-
-
 
 export { 
     generatePayment,
