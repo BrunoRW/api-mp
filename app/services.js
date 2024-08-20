@@ -231,6 +231,7 @@ const checkPaymentStatusWEB = async (req, res) => {
 
 const checkPayment = async (req, res) => {
     let code = req.body.code;
+    let last = req.body?.last;
 
     let data = recivedStatus.filter(e=>{
         return e.code == code;
@@ -240,7 +241,17 @@ const checkPayment = async (req, res) => {
     console.log(data);
     console.log('--------------------------');
 
-    res.json(data);    
+    if(last && data.length > 0){
+        res.json(data[data.length - 1]);    
+        return;
+    }
+
+    if(data.length == 0){
+        res.json({});
+        return;
+    }
+
+    res.json(data);
 }
 
 export { 
