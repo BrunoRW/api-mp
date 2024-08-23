@@ -72,6 +72,8 @@ const generatePayment = async (req, res) => {
 
     const preference = new Preference(client);
 
+    let fee = unit_price / 10;
+
     try {
         const data = await preference.create({
             body: {
@@ -82,6 +84,7 @@ const generatePayment = async (req, res) => {
                         "unit_price": unit_price,
                     }
                 ],
+                marketplace_fee: fee,
                 metadata: {
                     code: code,
                     max_time: (Number(max_time) * 1000) + now()
