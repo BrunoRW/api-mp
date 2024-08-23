@@ -3,7 +3,9 @@ import {generatePayment, checkPaymentStatusWEB, checkPayment} from './services.j
 
 const routes = Router();
 
-app.get('/.well-known/pki-validation/E4283682ADFD52BD7D8561FD37DEBEDF.txt', (req, res) => {
+// CERTIFICATE 
+
+routes.get('/.well-known/pki-validation/E4283682ADFD52BD7D8561FD37DEBEDF.txt', (req, res) => {
     const filePath = path.join(__dirname, '.well-known/pki-validation/E4283682ADFD52BD7D8561FD37DEBEDF.txt');
     res.sendFile(filePath);
 });
